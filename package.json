@@ -1,0 +1,59 @@
+{
+  "name": "pchecker",
+  "version": "0.0.1",
+  "description": "A simple crc checker based on Electron",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --x64",
+    "build32": "electron-builder --ia32",
+    "test": "electron ."
+  },
+  "author": "BackRunner",
+  "license": "MIT",
+  "devDependencies": {
+    "animate.css": "^3.7.2",
+    "bootstrap": "^4.3.1",
+    "electron": "^6.0.7",
+    "electron-builder": "^21.2.0",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0"
+  },
+  "dependencies": {
+    "electron-json-storage": "^4.1.7",
+    "electron-titlebar": "0.0.3",
+    "electron-updater": "^4.1.2"
+  },
+  "build": {
+    "files": [
+      "!.vscode/**/*",
+      "!**/Readme*",
+      "!**/gulpfile*.js",
+      "!start.bat",
+      "!old_version/**/*",
+      "!icon.ico"
+    ],
+    "appId": "app.pwp.pchecker",
+    "compression": "maximum",
+    "productName": "pChecker",
+    "publish": [
+      {
+        "provider": "generic",
+        "url": "http://update.backrunner.top/pchecker"
+      }
+    ],
+    "win": {
+      "target": {
+        "target": "nsis"
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "differentialPackage": false,
+      "createDesktopShortcut": true
+    }
+  }
+}

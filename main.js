@@ -1,0 +1,92 @@
+// requirements
+const {
+    app,
+    BrowserWindow
+} = require('electron');
+const ipc = require('electron').ipcMain;
+const storage = require('electron-json-storage');
+const path = require('path');
+
+// global const
+const appName = 'pchecker';
+
+// flags
+global.indebug = true; // debug flag
+global.isOS64 = true; // OS flag
+
+// global vars
+var mainWindow;
+
+// single intance lock
+const singleInstanceLock = app.requestSingleInstanceLock();
+if (!singleInstanceLock) {
+    app.exit();
+}
+
+// auto updater
+const {
+    autoUpdater
+} = require('electron-updater');
+let feedUrl = `http://update.backrunner.top/` + appName + `/${process.platform}/`;
+
+if (isOS64) {
+    feedUrl += `x64`;
+}
+
+// app
+
+app.on('ready', () => {
+    createMainWindow();
+});
+
+app.on('window-all-closed', () => {
+    app.quit();
+});
+
+app.on('second-instance', () => {
+    if (mainWindow != null) {
+        if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+        }
+        mainWindow.focus();
+    } else {
+        createMainWindow();
+        mainWindow.focus();
+    }
+});
+
+// main window
+
+function createMainWindow() {
+    // conf of main window
+    var conf = {
+        width: 680,
+        height: 420,
+        resizable: false,
+        show: false,
+        webPreferences: {
+            nodeIntegration: true
+        }
+    };
+
+    // titlebar
+    if (process.platform == 'darwin')
+        conf.titleBarStyle = 'hiddenInset';
+    else
+        conf.frame = false;
+
+    mainWindow = new BrowserWindow(conf);
+
+    if (indebug) {
+        mainWindow.webContents.openDevTools();
+    }
+
+    //load index page
+    let viewpath = path.resolve(__dirname, './public/index.html');
+    mainWindow.loadFile(viewpath);
+
+    //event listener
+    mainWindow.on('ready-to-show', () => {
+        mainWindow.show();
+    });
+}
