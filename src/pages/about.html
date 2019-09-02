@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>pChecker</title>
+    <title>关于</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--import requirements-->
     <script>
@@ -20,9 +20,47 @@
             remote,
             ipcRenderer
         } = require('electron');
+
         const app = remote.app;
     </script>
 </head>
 
 <body class="about-body">
+    <div class="container-titlebar col-lg-12 drag">
+        <div class="title" id="app-title">关于</div>
+        <div id="electron-titlebar" class="titlebar" style="position: fixed !important;z-index: 10;"></div>
+        <script>
+            require('electron-titlebar');
+        </script>
+    </div>
+    <div class="container-main">
+        <div class="container-about">
+            <div class="about-logo">
+                <img src="static/images/mirror.png"></img>
+            </div>
+            <div class="about-title">
+                <span>pChecker</span>
+                <div class="about-version">
+                    <span id="text-version"></span>
+                    <script>
+                        let version = app.getVersion();
+                        if (remote.getGlobal('isOS64')){
+                            version += ' x64';
+                        }
+                        $(document).ready(function () {
+                            $('#text-version').text(version);
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="about-footer">
+                <div class="about-icons">
+                    <i class="fa fa-github-alt" aria-hidden="true"></i>
+                </div>
+                <div class="about-author">
+                    <span>Developed by BackRunner</span>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>

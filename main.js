@@ -7,6 +7,10 @@ const ipc = require('electron').ipcMain;
 const storage = require('electron-json-storage');
 const path = require('path');
 
+// load window
+
+const aboutWindow = require('./app/windows/aboutWindow');
+
 // global const
 const appName = 'pchecker';
 
@@ -58,7 +62,9 @@ app.on('second-instance', () => {
 // main window
 
 function createMainWindow() {
+
     // conf of main window
+
     var conf = {
         width: 600,
         height: 360,
@@ -72,6 +78,7 @@ function createMainWindow() {
     };
 
     // titlebar
+
     if (process.platform == 'darwin')
         conf.titleBarStyle = 'hiddenInset';
     else
@@ -84,18 +91,28 @@ function createMainWindow() {
     }
 
     //load index page
+
     let viewpath = path.resolve(__dirname, './public/index.html');
     mainWindow.loadFile(viewpath);
 
     //event listener
+
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
 
         // main window ipc
 
-        ipc.on('mainwindow-reload', function() {
+        ipc.on('mainwindow-reload', () => {
             mainWindow.reload();
         });
 
+        ipc.on('openAboutWindow', () => {
+            aboutWindow.create();
+        });
+
+    });
+
+    mainWindow.on('closed', () => {
+        app.quit();
     });
 }

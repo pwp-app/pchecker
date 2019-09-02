@@ -32,17 +32,19 @@
             <span class="title-toolbar-item" data-action="reload">重新载入</span>
             <span class="title-toolbar-item">批量</span>
             <span class="title-toolbar-item">设置</span>
-            <span class="title-toolbar-item">关于</span>
+            <span class="title-toolbar-item" data-action="about">关于</span>
         </div>
         <div id="electron-titlebar" class="titlebar" style="position: fixed !important;z-index: 10;"></div>
         <script>
+            require('electron-titlebar');
             $('.title-toolbar').find('.title-toolbar-item').click(function(){
-                console.log(1);
-                console.log($(this))
                 let action = $(this).attr('data-action');
                 switch(action){
                     case 'reload':
                         ipcRenderer.send('mainwindow-reload');
+                        break;
+                    case 'about':
+                        ipcRenderer.send('openAboutWindow');
                         break;
                 }
             });
@@ -61,7 +63,4 @@
             </div>
         </div>
     </div>
-    <script>
-        require('electron-titlebar');
-    </script>
 </body>

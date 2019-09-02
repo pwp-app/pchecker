@@ -8,7 +8,7 @@
     .no-select-and-drag();
 }
 .file-title > span{
-    color: @color-outerspace;
+    color: @color-text-primary;
 }
 .file-split{
     margin: 14px 0;
@@ -18,7 +18,7 @@
     .no-select-and-drag();
 }
 .file-split > span{
-    color: @color-outerspace;
+    color: @color-text-primary;
 }
 .file-controls{
     text-align: center;
@@ -27,9 +27,15 @@
     width: 120px;
     height: 36px;
     border: none;
-    background: @color-outerspace;
+    background: @color-text-primary;
     border-radius: 20px;
     padding-bottom: 4px;
+}
+.file-controls > button:hover{
+    background: @color-hover-primary;
+}
+.file-controls > button:active{
+    background: @color-active-primary;
 }
 .file-controls > button > span{
     font-size: 14px;
