@@ -30,9 +30,8 @@
       "!.vscode/**/*",
       "!**/Readme*",
       "!**/gulpfile*.js",
-      "!start.bat",
       "!old_version/**/*",
-      "!icon.ico"
+      "!logo.ico"
     ],
     "appId": "app.pwp.pchecker",
     "compression": "maximum",
@@ -46,7 +45,8 @@
     "win": {
       "target": {
         "target": "nsis"
-      }
+      },
+      "icon": "logo.ico"
     },
     "nsis": {
       "oneClick": false,

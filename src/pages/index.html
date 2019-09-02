@@ -18,6 +18,7 @@
     <script>
         const {
             remote,
+            dialog,
             ipcRenderer
         } = require('electron');
         const app = remote.app;
@@ -27,7 +28,38 @@
 <body class="index-body">
     <div class="container-titlebar col-lg-12 drag">
         <div class="title" id="app-title">pChecker</div>
+        <div class="title-toolbar">
+            <span class="title-toolbar-item" data-action="reload">重新载入</span>
+            <span class="title-toolbar-item">批量</span>
+            <span class="title-toolbar-item">设置</span>
+            <span class="title-toolbar-item">关于</span>
+        </div>
         <div id="electron-titlebar" class="titlebar" style="position: fixed !important;z-index: 10;"></div>
+        <script>
+            $('.title-toolbar').find('.title-toolbar-item').click(function(){
+                console.log(1);
+                console.log($(this))
+                let action = $(this).attr('data-action');
+                switch(action){
+                    case 'reload':
+                        ipcRenderer.send('mainwindow-reload');
+                        break;
+                }
+            });
+        </script>
+    </div>
+    <div class="container-main">
+        <div class="container-file">
+            <div class="file-title">
+                <span>拖放文件到这个窗口</span>
+            </div>
+            <div class="file-split">
+                <span>or</span>
+            </div>
+            <div class="file-controls">
+                <button><span>选择文件</span></button>
+            </div>
+        </div>
     </div>
     <script>
         require('electron-titlebar');

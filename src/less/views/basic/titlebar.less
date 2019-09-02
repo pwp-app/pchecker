@@ -28,3 +28,24 @@
     -webkit-user-select: none;
     position: fixed !important;
 }
+
+.title-toolbar{
+    float: right;
+    margin-right: 100px;
+    margin-top: 4px;
+}
+
+.title-toolbar-item{
+    font-size: 12px;
+    margin-left: 12px;
+    color: @color-text-primary;
+    font-weight: 200;
+    letter-spacing: 0.05em;
+    -webkit-app-region: none !important;
+    .no-select-and-drag();
+}
+
+.title-toolbar-item:hover{
+    cursor: pointer !important;
+    color: @color-toolbar-hover;
+}

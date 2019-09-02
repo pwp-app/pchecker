@@ -1,0 +1,42 @@
+.container-file{
+    margin: auto;
+}
+.file-title{
+    font-size: 22px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    .no-select-and-drag();
+}
+.file-title > span{
+    color: @color-outerspace;
+}
+.file-split{
+    margin: 14px 0;
+    font-size: 18px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    .no-select-and-drag();
+}
+.file-split > span{
+    color: @color-outerspace;
+}
+.file-controls{
+    text-align: center;
+}
+.file-controls > button{
+    width: 120px;
+    height: 36px;
+    border: none;
+    background: @color-outerspace;
+    border-radius: 20px;
+    padding-bottom: 4px;
+}
+.file-controls > button > span{
+    font-size: 14px;
+    color: @color-primary;
+    letter-spacing: 0.05em;
+    .no-select-and-drag();
+}
+.file-controls > button:focus{
+    outline: none !important;
+}

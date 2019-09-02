@@ -60,9 +60,11 @@ app.on('second-instance', () => {
 function createMainWindow() {
     // conf of main window
     var conf = {
-        width: 680,
-        height: 420,
-        resizable: false,
+        width: 600,
+        height: 360,
+        minWidth: 420,
+        minHeight: 280,
+        maximizable: false,
         show: false,
         webPreferences: {
             nodeIntegration: true
@@ -88,5 +90,12 @@ function createMainWindow() {
     //event listener
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
+
+        // main window ipc
+
+        ipc.on('mainwindow-reload', function() {
+            mainWindow.reload();
+        });
+
     });
 }
