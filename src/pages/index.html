@@ -27,6 +27,8 @@
         const dialog = remote.dialog;
         const fs = require('fs');
         const crypto = require('crypto');
+        const path = require('path');
+        const moment = require('./static/moment.min.js');
     </script>
 </head>
 
@@ -87,6 +89,21 @@
                     <div class="crc-progress-bar"></div>
                 </div>
             </div>
+            <div class="crc-cancel">
+                <div class="crc-controls">
+                    <button id="btn-crc-cancel"><span>取消</span></button>
+                </div>
+                <script>
+                    $('#btn-crc-cancel').click(function() {
+                        flag_destory_stream = true;
+                        $('.container-crc').animateCss('fadeOut superfaster', function() {
+                            $('.container-crc').hide();
+                            $('.container-file').show();
+                            $('.container-file').animateCss('fadeIn superfaster');
+                        });
+                    });
+                </script>
+            </div>
             <div class="crc-main">
                 <script id="crc-main-tmpl" type="text/x-jsrender">
                     <div class="crc-main-item">
@@ -106,31 +123,65 @@
                     <button id="btn-crc-back" style="margin-left: 12px;"><span>返回</span></button>
                 </div>
                 <script>
-                    $('#btn-crc-choosefile').click(function(){
-                        chooseFile();
+                    $('#btn-crc-choosefile').click(function() {
+                        chooseFile('crc');
                     });
-                    $('#btn-crc-back').click(function(){
-                        $('.container-crc').animateCss('fadeOut superfaster', function(){
+                    $('#btn-crc-back').click(function() {
+                        $('.container-crc').animateCss('fadeOut superfaster', function() {
                             $('.container-crc').hide();
                             $('.container-file').show();
                             $('.container-file').animateCss('fadeIn superfaster');
                         });
                     });
-                    $('#btn-crc-save').click(function(){
-                        
+                    $('#btn-crc-save').click(function() {
+                        let e_name = $('.crc-main-item').find('.crc-item-name');
+                        let e_value = $('.crc-main-item').find('.crc-item-value');
+                        console.log(e_name);
+                        console.log(e_value);
+                        let validatePath = $('.crc-file-filepath').attr('title');
+                        dialog.showSaveDialog({
+                            title: '保存校验内容',
+                            defaultPath: 'pChecker-'+path.basename(validatePath)+'.log'
+                        }).then(result => {
+                            if (!result.canceled) {
+                                let filepath = result.filePath;
+                                fs.open(filepath, 'w', (err, fd) => {
+                                    if (err) {
+                                        dialog.showMessageBox({
+                                            type: 'error',
+                                            title: '保存失败',
+                                            message: '无法打开文件。'
+                                        });
+                                        return;
+                                    }
+                                    fs.writeSync(fd, 'pChecker Log\n');
+                                    for (let i=0;i<35;i++){
+                                        fs.writeSync(fd, '=');
+                                    }
+                                    fs.writeSync(fd, '\n');
+                                    fs.writeSync(fd, validatePath + '\n');
+                                    fs.writeSync(fd, 'Time: '+ moment().format('YYYY-MM-DD HH:mm:ss')+'\n\n');
+                                    for (let i=0;i<e_name.length;i++){
+                                        fs.writeSync(fd, $(e_name[i]).find('span').text() + $(e_value[i]).find('span').text()+'\n');
+                                    }
+                                    fs.closeSync(fd);
+                                });
+                            }
+                        });
                     });
                 </script>
             </div>
         </div>
         <script>
             var crc_tmpl = $.templates("#crc-main-tmpl");
-
+            // define file stream var in single file mode
+            var flag_destory_stream = false;
             // bind event
             $('#btn-choosefile').click(function() {
-                chooseFile();
+                chooseFile('main');
             });
 
-            function chooseFile(){
+            function chooseFile(source) {
                 dialog.showOpenDialog({
                     title: '选择文件',
                     properties: ['showHiddenFiles']
@@ -140,55 +191,77 @@
                             // init ui
                             $('.crc-main').hide();
                             $('.crc-main').html('');
+                            $('.crc-cancel').hide();
                             $('.crc-footer').hide();
                             updateStatus('validating');
                             setProgressbar(0);
+                            // init flag
+                            flag_destory_stream = false;
                             // start validating file
-                            validateFile(result.filePaths[0]);
+                            validateFile(result.filePaths[0], source);
                         }
                     }
                 });
             }
 
-            function validateFile(filepath) {
+            function validateFile(filepath, source) {
                 // ui action
-                $('.container-file').animateCss('fadeOut superfaster', function() {
-                    $('.container-file').hide();
-                    $('.container-crc').show();
-                    $('.container-crc').animateCss('fadeIn superfaster');
-                });
+                if (source == 'main'){
+                    $('.container-file').animateCss('fadeOut superfaster', function() {
+                        $('.container-file').hide();
+                        $('.container-crc').show();
+                        $('.container-crc').animateCss('fadeIn superfaster');
+                    });
+                }
                 $('.crc-file-filepath').text(filepath);
-                $('.crc-file-filepath').attr('title',filepath);
+                $('.crc-file-filepath').attr('title', filepath);
                 // stat file size
                 let file_stats = fs.statSync(filepath);
                 // read file
                 let stream = fs.createReadStream(filepath);
                 let startTime = Date.now();
-                if (!stream){
+                if (!stream) {
                     updateStatus('error');
                     setProgressbar(100);
                 }
+                let flag_bigfile = false;
                 let hash_md5 = crypto.createHash('md5');
                 let hash_sha1 = crypto.createHash('sha1');
                 let hash_sha256 = crypto.createHash('sha256');
                 let hash_ripemd160 = crypto.createHash('ripemd160');
-                stream.on('data', function(d){
+                stream.on('data', function(d) {
+                    // judge flag
+                    if (flag_destory_stream) {
+                        stream.close();
+                        flag_destory_stream = false;
+                    }
                     // hash update
                     hash_md5.update(d);
                     hash_sha1.update(d);
                     hash_sha256.update(d);
                     hash_ripemd160.update(d);
                     // update ui
-                    if (file_stats){
+                    if (file_stats) {
                         let percent = (stream.bytesRead / file_stats.size) * 100;
                         setProgressbar(percent);
                         let updateTime = Date.now();
-                        if (updateTime - startTime > 2000){
-                            $('#crc-status-text').text('正在校验 '+ Math.floor(percent) + '%')
+                        if (updateTime - startTime > 2000) {
+                            // set flag
+                            if (!flag_bigfile) {
+                                flag_bigfile = true;
+                                // show cancel button
+                                $('.crc-cancel').show();
+                                $('.crc-cancel').animateCss('fadeIn veryfaster');
+                            }
+                            // set ui
+                            $('#crc-status-text').text('正在校验 ' + Math.floor(percent) + '%');
                         }
                     }
                 });
-                stream.on('end', function(){
+                stream.on('end', function() {
+                    // set flag
+                    flag_destory_stream = false;
+                    // render html
                     let html = '';
                     html += crc_tmpl.render({
                         name: 'md5',
@@ -207,36 +280,47 @@
                         value: hash_ripemd160.digest('hex')
                     });
                     // update ui
-                    $('.crc-main').append(html);
-                    $('.crc-main').show();
-                    $('.crc-main').animateCss('fadeIn superfaster');
-                    $('.crc-footer').show();
-                    $('.crc-footer').animateCss('fadeIn superfaster');
+                    if (flag_bigfile) {
+                        $('.crc-cancel').animateCss('fadeOut sueprfaster', function() {
+                            $('.crc-cancel').hide();
+                            $('.crc-main').append(html);
+                            $('.crc-main').show();
+                            $('.crc-main').animateCss('fadeIn superfaster');
+                            $('.crc-footer').show();
+                            $('.crc-footer').animateCss('fadeIn superfaster');
+                        })
+                    } else {
+                        $('.crc-main').append(html);
+                        $('.crc-main').show();
+                        $('.crc-main').animateCss('fadeIn superfaster');
+                        $('.crc-footer').show();
+                        $('.crc-footer').animateCss('fadeIn superfaster');
+                    }
                     setProgressbar(100);
                     updateStatus('finished');
                 });
             }
 
             // 设置progressbar的值 0-100
-            function setProgressbar(value){
-                $('.crc-progress-bar').css('width', value+'%');
+            function setProgressbar(value) {
+                $('.crc-progress-bar').css('width', value + '%');
             }
 
             // 更新crc-status的内容
-            function updateStatus(status){
+            function updateStatus(status) {
                 $('.crc-status-icon').hide();
-                switch(status){
+                switch (status) {
                     case 'error':
                         $('#crc-status-error').show();
                         $('#crc-status-text').text('校验错误');
                         break;
                     case 'validating':
-                    $('#crc-status-loading').show();
-                    $('#crc-status-text').text('正在校验');
+                        $('#crc-status-loading').show();
+                        $('#crc-status-text').text('正在校验');
                         break;
                     case 'finished':
-                    $('#crc-status-finished').show();
-                    $('#crc-status-text').text('校验完成');
+                        $('#crc-status-finished').show();
+                        $('#crc-status-text').text('校验完成');
                         break;
                 }
             }

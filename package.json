@@ -1,6 +1,6 @@
 {
   "name": "pchecker",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "description": "A simple crc checker based on Electron",
   "main": "main.js",
   "scripts": {
@@ -18,8 +18,9 @@
     "electron-builder": "^21.2.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.4.1",
-    "popper.js": "^1.15.0",
-    "jsrender": "^1.0.4"
+    "jsrender": "^1.0.4",
+    "moment": "^2.24.0",
+    "popper.js": "^1.15.0"
   },
   "dependencies": {
     "electron-json-storage": "^4.1.7",

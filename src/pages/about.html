@@ -44,9 +44,6 @@
                     <span id="text-version"></span>
                     <script>
                         let version = app.getVersion();
-                        if (remote.getGlobal('isOS64')){
-                            version += ' x64';
-                        }
                         $(document).ready(function () {
                             $('#text-version').text(version);
                         });
