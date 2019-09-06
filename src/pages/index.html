@@ -14,14 +14,19 @@
     <link rel="stylesheet" href="static/bootstrap.min.css">
     <link rel="stylesheet" href="static/animate.min.css">
     <script src="static/bootstrap.min.js"></script>
+    <script src="static/animate.css.js"></script>
+    <script src="static/jsrender.min.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
     <script>
+        // requirements
         const {
             remote,
-            dialog,
             ipcRenderer
         } = require('electron');
         const app = remote.app;
+        const dialog = remote.dialog;
+        const fs = require('fs');
+        const crypto = require('crypto');
     </script>
 </head>
 
@@ -30,16 +35,16 @@
         <div class="title" id="app-title">pChecker</div>
         <div class="title-toolbar">
             <span class="title-toolbar-item" data-action="reload">重新载入</span>
-            <span class="title-toolbar-item">批量</span>
-            <span class="title-toolbar-item">设置</span>
+            <!--<span class="title-toolbar-item">批量</span>
+            <span class="title-toolbar-item">设置</span>-->
             <span class="title-toolbar-item" data-action="about">关于</span>
         </div>
         <div id="electron-titlebar" class="titlebar" style="position: fixed !important;z-index: 10;"></div>
         <script>
             require('electron-titlebar');
-            $('.title-toolbar').find('.title-toolbar-item').click(function(){
+            $('.title-toolbar').find('.title-toolbar-item').click(function() {
                 let action = $(this).attr('data-action');
-                switch(action){
+                switch (action) {
                     case 'reload':
                         ipcRenderer.send('mainwindow-reload');
                         break;
@@ -59,8 +64,153 @@
                 <span>or</span>
             </div>
             <div class="file-controls">
-                <button><span>选择文件</span></button>
+                <button id="btn-choosefile"><span>选择文件</span></button>
             </div>
         </div>
+        <div class="container-crc">
+            <div class="crc-header">
+                <div class="crc-file">
+                    <p class="crc-file-filepath"></p>
+                </div>
+                <div class="crc-header-split"></div>
+                <div class="crc-status">
+                    <div class="crc-status-wrapper">
+                        <i class="fa fa-spin fa-spinner crc-status-icon" id="crc-status-loading"></i>
+                        <i class="fa fa-check crc-status-icon" id="crc-status-finished"></i>
+                        <i class="fa fa-times crc-status-icon" id="crc-status-error"></i>
+                        <span id="crc-status-text">正在校验</span>
+                    </div>
+                </div>
+            </div>
+            <div class="crc-progress">
+                <div class="crc-progress-wrapper">
+                    <div class="crc-progress-bar"></div>
+                </div>
+            </div>
+            <div class="crc-main">
+                <script id="crc-main-tmpl" type="text/x-jsrender">
+                    <div class="crc-main-item">
+                        <div class="crc-item-name">
+                            <span>{{:name}}: </span>
+                        </div>
+                        <div class="crc-item-value">
+                            <span>{{:value}}</span>
+                        </div>
+                    </div>
+                </script>
+                <div class="crc-footer">
+
+                </div>
+            </div>
+        </div>
+        <script>
+            var crc_tmpl = $.templates("#crc-main-tmpl");
+            $('#btn-choosefile').click(function() {
+                dialog.showOpenDialog({
+                    title: '选择文件',
+                    properties: ['showHiddenFiles']
+                }).then(result => {
+                    if (!result.canceled) {
+                        if (result.filePaths.length > 0) {
+                            // init ui
+                            $('.crc-main').hide();
+                            $('.crc-main').html('');
+                            updateStatus('validating');
+                            // start validating file
+                            validateFile(result.filePaths[0]);
+                        }
+                    }
+                });
+            });
+
+            function validateFile(filepath) {
+                // ui action
+                $('.container-file').animateCss('fadeOut superfaster', function() {
+                    $('.container-file').hide();
+                    $('.container-crc').show();
+                    $('.container-crc').animateCss('fadeIn superfaster');
+                });
+                $('.crc-file-filepath').text(filepath);
+                $('.crc-file-filepath').attr('title',filepath);
+                // stat file size
+                let file_stats = fs.statSync(filepath);
+                // read file
+                let stream = fs.createReadStream(filepath);
+                let startTime = Date.now();
+                if (!stream){
+                    updateStatus('error');
+                    setProgressbar(100);
+                }
+                let hash_md5 = crypto.createHash('md5');
+                let hash_sha1 = crypto.createHash('sha1');
+                let hash_sha256 = crypto.createHash('sha256');
+                let hash_ripemd160 = crypto.createHash('ripemd160');
+                stream.on('data', function(d){
+                    // hash update
+                    hash_md5.update(d);
+                    hash_sha1.update(d);
+                    hash_sha256.update(d);
+                    hash_ripemd160.update(d);
+                    // update ui
+                    if (file_stats){
+                        let percent = (stream.bytesRead / file_stats.size) * 100;
+                        setProgressbar(percent);
+                        let updateTime = Date.now();
+                        if (updateTime - startTime > 5000){
+                            $('#crc-status-text').text('正在校验 '+ Math.floor(percent) + '%')
+                        }
+                    }
+                });
+                stream.on('end', function(){
+                    let html = '';
+                    html += crc_tmpl.render({
+                        name: 'md5',
+                        value: hash_md5.digest('hex')
+                    });
+                    html += crc_tmpl.render({
+                        name: 'sha1',
+                        value: hash_sha1.digest('hex')
+                    });
+                    html += crc_tmpl.render({
+                        name: 'sha256',
+                        value: hash_sha256.digest('hex')
+                    });
+                    html += crc_tmpl.render({
+                        name: 'ripemd160',
+                        value: hash_ripemd160.digest('hex')
+                    });
+                    // update ui
+                    $('.crc-main').append(html);
+                    $('.crc-main').show();
+                    $('.crc-main').animateCss('fadeIn superfaster');
+                    setProgressbar(100);
+                    updateStatus('finished');
+                });
+            }
+
+            // 设置progressbar的值 0-100
+            function setProgressbar(value){
+                $('.crc-progress-bar').css('width', value+'%');
+            }
+
+            // 更新crc-status的内容
+            function updateStatus(status){
+                $('.crc-status-icon').hide();
+                switch(status){
+                    case 'error':
+                        $('#crc-status-error').show();
+                        $('#crc-status-text').text('校验错误');
+                        break;
+                    case 'validating':
+                    $('#crc-status-loading').show();
+                    $('#crc-status-text').text('正在校验');
+                        break;
+                    case 'finished':
+                    $('#crc-status-finished').show();
+                    $('#crc-status-text').text('校验完成');
+                        break;
+                }
+            }
+        </script>
     </div>
 </body>

@@ -1,0 +1,95 @@
+.container-crc{
+    display: none;
+    width: 100%;
+    margin-top: @titlebar-height;
+    padding: 14px 24px;
+}
+
+.crc-header{
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.crc-file{
+    flex: 0 0 70%;
+    max-width: 70%;
+    .no-select-and-drag();
+}
+
+.crc-file > p {
+    letter-spacing: 0.025em;
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    text-align: left;
+    direction: rtl;
+}
+
+.crc-header-split{
+    flex: 0 0 5%;
+    max-width: 5%;
+}
+
+.crc-status{
+    flex: 0 0 25%;
+    max-width: 25%;
+    .no-select-and-drag();
+}
+
+.crc-status-wrapper{
+    float: right;
+}
+
+.crc-status-wrapper > span{
+    margin-left: 4px;
+    letter-spacing: 0.025em;
+    font-size: 14px;
+}
+
+#crc-status-finished{
+    display: none;
+}
+
+.crc-main-item{
+    display: flex;
+    height: 32px;
+}
+
+.crc-item-name{
+    flex: 0 0 15%;
+    max-width: 15%;
+    .no-select-and-drag();
+}
+
+.crc-item-name > span{
+    font-size: 14px;
+}
+
+.crc-item-value{
+    flex: 0 0 85%;
+    max-width: 85%;
+}
+
+.crc-item-value > span{
+    font-size: 14px;
+    word-break: break-all;
+    white-space: initial;
+}
+
+.crc-progress{
+    margin-top: 2px;
+    margin-bottom: 16px;
+}
+
+.crc-progress-wrapper{
+    border-radius: 5px;
+    text-align: left;
+}
+
+.crc-progress-bar{
+    height: 1px;
+    width: 0;
+    background: @color-text-primary;
+}

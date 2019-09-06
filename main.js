@@ -55,7 +55,6 @@ app.on('second-instance', () => {
         mainWindow.focus();
     } else {
         createMainWindow();
-        mainWindow.focus();
     }
 });
 
@@ -66,10 +65,9 @@ function createMainWindow() {
     // conf of main window
 
     var conf = {
-        width: 600,
-        height: 360,
-        minWidth: 420,
-        minHeight: 280,
+        width: 580,
+        height: 320,
+        resizable: false,
         maximizable: false,
         show: false,
         webPreferences: {
