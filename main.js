@@ -65,7 +65,7 @@ function createMainWindow() {
     // conf of main window
 
     var conf = {
-        width: 580,
+        width: 620,
         height: 320,
         resizable: false,
         maximizable: false,

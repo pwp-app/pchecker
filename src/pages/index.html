@@ -98,14 +98,39 @@
                         </div>
                     </div>
                 </script>
-                <div class="crc-footer">
-
+            </div>
+            <div class="crc-footer">
+                <div class="crc-controls">
+                    <button id="btn-crc-choosefile"><span>选择文件</span></button>
+                    <button id="btn-crc-save" style="margin-left: 12px;"><span>保存结果</span></button>
+                    <button id="btn-crc-back" style="margin-left: 12px;"><span>返回</span></button>
                 </div>
+                <script>
+                    $('#btn-crc-choosefile').click(function(){
+                        chooseFile();
+                    });
+                    $('#btn-crc-back').click(function(){
+                        $('.container-crc').animateCss('fadeOut superfaster', function(){
+                            $('.container-crc').hide();
+                            $('.container-file').show();
+                            $('.container-file').animateCss('fadeIn superfaster');
+                        });
+                    });
+                    $('#btn-crc-save').click(function(){
+                        
+                    });
+                </script>
             </div>
         </div>
         <script>
             var crc_tmpl = $.templates("#crc-main-tmpl");
+
+            // bind event
             $('#btn-choosefile').click(function() {
+                chooseFile();
+            });
+
+            function chooseFile(){
                 dialog.showOpenDialog({
                     title: '选择文件',
                     properties: ['showHiddenFiles']
@@ -115,13 +140,15 @@
                             // init ui
                             $('.crc-main').hide();
                             $('.crc-main').html('');
+                            $('.crc-footer').hide();
                             updateStatus('validating');
+                            setProgressbar(0);
                             // start validating file
                             validateFile(result.filePaths[0]);
                         }
                     }
                 });
-            });
+            }
 
             function validateFile(filepath) {
                 // ui action
@@ -156,7 +183,7 @@
                         let percent = (stream.bytesRead / file_stats.size) * 100;
                         setProgressbar(percent);
                         let updateTime = Date.now();
-                        if (updateTime - startTime > 5000){
+                        if (updateTime - startTime > 2000){
                             $('#crc-status-text').text('正在校验 '+ Math.floor(percent) + '%')
                         }
                     }
@@ -183,6 +210,8 @@
                     $('.crc-main').append(html);
                     $('.crc-main').show();
                     $('.crc-main').animateCss('fadeIn superfaster');
+                    $('.crc-footer').show();
+                    $('.crc-footer').animateCss('fadeIn superfaster');
                     setProgressbar(100);
                     updateStatus('finished');
                 });

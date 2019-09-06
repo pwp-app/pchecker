@@ -93,3 +93,33 @@
     width: 0;
     background: @color-text-primary;
 }
+
+.crc-controls{
+    text-align: center;
+    margin-top: 18px;
+}
+
+.crc-controls > button{
+    height: 32px;
+    border: none;
+    background: @color-text-primary;
+    border-radius: 20px;
+    padding-left: 18px;
+    padding-right: 18px;
+    padding-bottom: 4px;
+}
+
+.crc-controls > button:hover{
+    background: @color-hover-primary;
+}
+
+.crc-controls > button:active{
+    background: @color-active-primary;
+}
+
+.crc-controls > button > span{
+    font-size: 13px;
+    color: @color-primary;
+    letter-spacing: 0.05em;
+    .no-select-and-drag();
+}
