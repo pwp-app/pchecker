@@ -68,6 +68,11 @@
             <div class="file-controls">
                 <button id="btn-choosefile"><span>选择文件</span></button>
             </div>
+            <div class="container-update">
+                <div class="update-controls">
+                    <button id="btn-update">检测到新版本，点我更新</button>
+                </div>
+            </div>
         </div>
         <div class="container-crc">
             <div class="crc-header">
@@ -136,12 +141,10 @@
                     $('#btn-crc-save').click(function() {
                         let e_name = $('.crc-main-item').find('.crc-item-name');
                         let e_value = $('.crc-main-item').find('.crc-item-value');
-                        console.log(e_name);
-                        console.log(e_value);
                         let validatePath = $('.crc-file-filepath').attr('title');
                         dialog.showSaveDialog({
                             title: '保存校验内容',
-                            defaultPath: 'pChecker-'+path.basename(validatePath)+'.log'
+                            defaultPath: 'pChecker-' + path.basename(validatePath) + '-' + moment().format('YYYYMMDDHHmmss') + '.log'
                         }).then(result => {
                             if (!result.canceled) {
                                 let filepath = result.filePath;
@@ -155,14 +158,14 @@
                                         return;
                                     }
                                     fs.writeSync(fd, 'pChecker Log\n');
-                                    for (let i=0;i<35;i++){
+                                    for (let i = 0; i < 35; i++) {
                                         fs.writeSync(fd, '=');
                                     }
                                     fs.writeSync(fd, '\n');
                                     fs.writeSync(fd, validatePath + '\n');
-                                    fs.writeSync(fd, 'Time: '+ moment().format('YYYY-MM-DD HH:mm:ss')+'\n\n');
-                                    for (let i=0;i<e_name.length;i++){
-                                        fs.writeSync(fd, $(e_name[i]).find('span').text() + $(e_value[i]).find('span').text()+'\n');
+                                    fs.writeSync(fd, 'Time: ' + moment().format('YYYY-MM-DD HH:mm:ss') + '\n\n');
+                                    for (let i = 0; i < e_name.length; i++) {
+                                        fs.writeSync(fd, $(e_name[i]).find('span').text() + $(e_value[i]).find('span').text() + '\n');
                                     }
                                     fs.closeSync(fd);
                                 });
@@ -176,6 +179,7 @@
             var crc_tmpl = $.templates("#crc-main-tmpl");
             // define file stream var in single file mode
             var flag_destory_stream = false;
+            var flag_drop = true;
             // bind event
             $('#btn-choosefile').click(function() {
                 chooseFile('main');
@@ -188,15 +192,8 @@
                 }).then(result => {
                     if (!result.canceled) {
                         if (result.filePaths.length > 0) {
-                            // init ui
-                            $('.crc-main').hide();
-                            $('.crc-main').html('');
-                            $('.crc-cancel').hide();
-                            $('.crc-footer').hide();
-                            updateStatus('validating');
-                            setProgressbar(0);
-                            // init flag
-                            flag_destory_stream = false;
+                            // init
+                            initValidate()
                             // start validating file
                             validateFile(result.filePaths[0], source);
                         }
@@ -204,9 +201,22 @@
                 });
             }
 
+            function initValidate() {
+                // init ui
+                $('.crc-main').hide();
+                $('.crc-main').html('');
+                $('.crc-cancel').hide();
+                $('.crc-footer').hide();
+                updateStatus('validating');
+                setProgressbar(0);
+                // init flag
+                flag_destory_stream = false;
+                flag_drop = false;
+            }
+
             function validateFile(filepath, source) {
                 // ui action
-                if (source == 'main'){
+                if (source == 'main') {
                     $('.container-file').animateCss('fadeOut superfaster', function() {
                         $('.container-file').hide();
                         $('.container-crc').show();
@@ -223,6 +233,10 @@
                 if (!stream) {
                     updateStatus('error');
                     setProgressbar(100);
+                    $('.crc-cancel').show();
+                    $('.crc-cancel').animateCss('fadeIn veryfaster');
+                    flag_drop = true;
+                    return;
                 }
                 let flag_bigfile = false;
                 let hash_md5 = crypto.createHash('md5');
@@ -261,6 +275,7 @@
                 stream.on('end', function() {
                     // set flag
                     flag_destory_stream = false;
+                    flag_drop = true;
                     // render html
                     let html = '';
                     html += crc_tmpl.render({
@@ -281,7 +296,7 @@
                     });
                     // update ui
                     if (flag_bigfile) {
-                        $('.crc-cancel').animateCss('fadeOut sueprfaster', function() {
+                        $('.crc-cancel').animateCss('fadeOut superfaster', function() {
                             $('.crc-cancel').hide();
                             $('.crc-main').append(html);
                             $('.crc-main').show();
@@ -324,6 +339,61 @@
                         break;
                 }
             }
+
+            // set up drop action
+            document.ondragenter = document.ondragover = document.ondragleave = function(e) {
+                e.preventDefault();
+                return false;
+            }
+
+            document.ondrop = function(e) {
+                e.preventDefault();
+                if (flag_drop) {
+                    let filepath = e.dataTransfer.files[0].path;
+                    let filestat = fs.statSync(filepath);
+                    if (filestat.isDirectory()) {
+                        dialog.showMessageBox({
+                            type: 'error',
+                            title: '错误',
+                            message: '不支持拖放文件夹，请拖放一个文件到窗口内进行校验'
+                        });
+                    } else {
+                        initValidate();
+                        if ($('.container-file').css('display') == 'none') {
+                            validateFile(filepath, 'drop');
+                        } else {
+                            validateFile(filepath, 'main');
+                        }
+                    }
+                }
+            }
+        </script>
+        <script>
+            ipcRenderer.on('update-message', (event, {
+                message,
+                data
+            }) => {
+                switch (message) {
+                    case 'update-available':
+                        $('.container-update').show();
+                        $('.container-update').animateCss('fadeIn superfaster');
+                        $('#btn-update').one('click', function(){
+                            ipcRenderer.send('downloadNow');
+                            $('#btn-save').attr('disabled','true');
+                        });
+                        break;
+                    case 'download-progress':
+                        $('#btn-save').text('正在下载更新 '+data.percent.toFixed(1)+'%');
+                        break;
+                    case 'update-downloaded':
+                        $('#btn-save').text('更新下载完成，点我立刻更新');
+                        $('#btn-save').removeAttr('disabled');
+                        $('#btn-save').one('click',function(){
+                            ipcRenderer.send('app-quitNow');
+                        });
+                        break;
+                }
+            });
         </script>
     </div>
 </body>

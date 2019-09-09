@@ -31,11 +31,54 @@ if (!singleInstanceLock) {
 const {
     autoUpdater
 } = require('electron-updater');
-let feedUrl = `http://update.backrunner.top/` + appName + `/${process.platform}/`;
+let feedUrl = `http://update.backrunner.top/` + appName + `/${process.platform}`;
 
 if (isOS64) {
-    feedUrl += `x64`;
+    feedUrl += `/x64`;
 }
+
+let checkForUpdates = () => {
+
+    let sendUpdateMessage = (message, data) => {
+        win.webContents.send('update-message', {
+            message,
+            data
+        });
+    };
+
+    autoUpdater.setFeedURL(feedUrl);
+    autoUpdater.autoDownload = false;
+
+    ipc.on('downloadNow', function() {
+        autoUpdater.downloadUpdate();
+    });
+
+    autoUpdater.on('error', function(message) {
+        sendUpdateMessage('error', message);
+    });
+
+    autoUpdater.on('checking-for-update', function(message) {
+        sendUpdateMessage('checking-for-update', message);
+    });
+
+    autoUpdater.on('update-available', function(message) {
+        sendUpdateMessage('update-available', message);
+    });
+
+    autoUpdater.on('update-not-available', function(message) {
+        sendUpdateMessage('update-not-available', message);
+    });
+
+    autoUpdater.on('download-progress', function(progressObj) {
+        sendUpdateMessage('downloadProgress', progressObj);
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+        sendUpdateMessage('update-downloaded');
+    });
+
+    autoUpdater.checkForUpdates();
+};
 
 // app
 
@@ -84,10 +127,6 @@ function createMainWindow() {
 
     mainWindow = new BrowserWindow(conf);
 
-    if (indebug) {
-        mainWindow.webContents.openDevTools();
-    }
-
     //load index page
 
     let viewpath = path.resolve(__dirname, './public/index.html');
@@ -96,7 +135,9 @@ function createMainWindow() {
     //event listener
 
     mainWindow.on('ready-to-show', () => {
+
         mainWindow.show();
+        checkForUpdates();
 
         // main window ipc
 
@@ -106,6 +147,10 @@ function createMainWindow() {
 
         ipc.on('openAboutWindow', () => {
             aboutWindow.create();
+        });
+
+        ipc.on('app-quitNow', ()=>{
+            app.quit();
         });
 
     });
