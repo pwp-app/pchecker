@@ -44,7 +44,7 @@
                     <span id="text-version"></span>
                     <script>
                         let version = app.getVersion();
-                        $(document).ready(function () {
+                        $(document).ready(function() {
                             $('#text-version').text(version);
                         });
                     </script>
@@ -60,4 +60,12 @@
             </div>
         </div>
     </div>
+    <script>
+        if (!remote.getGlobal('indebug')) {
+            Mousetrap.bind('ctrl+shift+i', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+    </script>
 </body>

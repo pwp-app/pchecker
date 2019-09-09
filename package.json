@@ -20,6 +20,7 @@
     "jquery": "^3.4.1",
     "jsrender": "^1.0.4",
     "moment": "^2.24.0",
+    "mousetrap": "^1.6.3",
     "popper.js": "^1.15.0"
   },
   "dependencies": {
@@ -33,7 +34,8 @@
       "!**/Readme*",
       "!**/gulpfile*.js",
       "!old_version/**/*",
-      "!logo.ico"
+      "!logo.ico",
+      "!src/assets/**/*"
     ],
     "appId": "app.pwp.pchecker",
     "compression": "maximum",

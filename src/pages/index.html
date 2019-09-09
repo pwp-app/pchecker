@@ -16,6 +16,7 @@
     <script src="static/bootstrap.min.js"></script>
     <script src="static/animate.css.js"></script>
     <script src="static/jsrender.min.js"></script>
+    <script src="static/mousetrap.min.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
     <script>
         // requirements
@@ -29,6 +30,9 @@
         const crypto = require('crypto');
         const path = require('path');
         const moment = require('./static/moment.min.js');
+
+        // const
+        const indebug = remote.getGlobal('indebug');
     </script>
 </head>
 
@@ -36,8 +40,8 @@
     <div class="container-titlebar col-lg-12 drag">
         <div class="title" id="app-title">pChecker</div>
         <div class="title-toolbar">
-            <span class="title-toolbar-item" data-action="reload">重新载入</span>
-            <!--<span class="title-toolbar-item">批量</span>
+            <!--<span class="title-toolbar-item" data-action="reload">重新载入</span>
+            <span class="title-toolbar-item">批量</span>
             <span class="title-toolbar-item">设置</span>-->
             <span class="title-toolbar-item" data-action="about">关于</span>
         </div>
@@ -396,4 +400,14 @@
             });
         </script>
     </div>
+    <script>
+        if (!indebug) {
+            console.log(1)
+            Mousetrap.bind('ctrl+shift+i', (e) => {
+                console.log(2)
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        }
+    </script>
 </body>

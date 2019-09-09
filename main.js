@@ -15,7 +15,7 @@ const aboutWindow = require('./app/windows/aboutWindow');
 const appName = 'pchecker';
 
 // flags
-global.indebug = true; // debug flag
+global.indebug = false; // debug flag
 global.isOS64 = true; // OS flag
 
 // global vars
