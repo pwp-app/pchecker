@@ -15,7 +15,7 @@ const aboutWindow = require('./app/windows/aboutWindow');
 const appName = 'pchecker';
 
 // flags
-global.indebug = false; // debug flag
+global.indebug = true; // debug flag
 global.isOS64 = true; // OS flag
 
 // global vars
@@ -40,7 +40,7 @@ if (isOS64) {
 let checkForUpdates = () => {
 
     let sendUpdateMessage = (message, data) => {
-        win.webContents.send('update-message', {
+        mainWindow.webContents.send('update-message', {
             message,
             data
         });
