@@ -32,16 +32,17 @@
 .title-toolbar{
     float: right;
     margin-right: 100px;
-    margin-top: 8px;
+    margin-top: 7px;
     font-size: 0;
 }
 
 .title-toolbar-item{
     font-size: 12px;
     margin-left: 12px;
-    color: @color-text-primary;
+    color: lighten(@color-text-primary, 5%);
     font-weight: 200;
     letter-spacing: 0.05em;
+    transition: 100ms;
     -webkit-app-region: none !important;
     .no-select-and-drag();
 }

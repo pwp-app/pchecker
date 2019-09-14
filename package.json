@@ -21,7 +21,8 @@
     "jsrender": "^1.0.4",
     "moment": "^2.24.0",
     "mousetrap": "^1.6.3",
-    "popper.js": "^1.15.0"
+    "popper.js": "^1.15.0",
+    "js-yaml": "^3.13.1"
   },
   "dependencies": {
     "electron-json-storage": "^4.1.7",
