@@ -9,7 +9,36 @@
         <title>pChecker</title>
         <meta name="description" content="A file crc checker Developed by BackRunner">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="static/animate.min.css">
         <link rel="stylesheet" href="static/main.min.css">
+        <script src="static/jquery.min.js"></script>
+        <script>
+            $.fn.extend({
+                animateCss: function (animationName, callback) {
+                    var animationEnd = (function (el) {
+                        var animations = {
+                            animation: 'animationend',
+                            OAnimation: 'oAnimationEnd',
+                            MozAnimation: 'mozAnimationEnd',
+                            WebkitAnimation: 'webkitAnimationEnd',
+                        };
+
+                        for (var t in animations) {
+                            if (typeof (el.style[t]) !== 'undefined') {
+                                return animations[t];
+                            }
+                        }
+                    })(document.createElement('div'));
+
+                    this.addClass('animated ' + animationName).one(animationEnd, function () {
+                        $(this).removeClass('animated ' + animationName);
+                        if (typeof callback === 'function') callback();
+                    });
+
+                    return this;
+                },
+            });
+        </script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -24,9 +53,42 @@
                     <span>pChecker</span>
                 </div>
                 <div class="title-desc">
-                    <span data-lang="desc">一个具有现代<h></h>UI<h></h>的文件校验器</span>
+                    <span data-lang="desc">一个具有现代<h></h>UI<h></h>的开源文件校验器</span>
+                </div>
+            </div>
+            <div class="container-download">
+                <div class="download-error">
+                    <span>无法获取安装包下载信息</span>
+                    <div class="controls download-error-controls">
+                        <button><span>查看源码</span></button>
+                    </div>
+                </div>
+            </div>
+            <div class="container-footer">
+                <div class="footer-split-wrapper">
+                    <div class="footer-split"></div>
+                </div>
+                <div class="footer-link">
+                    <a href="https://pwp.app">GitHub</a>
+                    <a href="https://pwp.app">pwp.app</a>
                 </div>
             </div>
         </div>
+        <script>
+            $.ajax({
+                url: 'http://update.backrunner.top/pchecker/win32/lastest.yml',
+                type: 'GET',
+                success: function(res){
+                    if (res){
+
+                    } else {
+
+                    }
+                },
+                error: function(err){
+                    console.error(err);
+                }
+            })
+        </script>
     </body>
 </html>
