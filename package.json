@@ -1,6 +1,6 @@
 {
   "name": "pchecker",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A simple crc checker based on Electron",
   "main": "main.js",
   "scripts": {
@@ -35,7 +35,8 @@
       "!**/gulpfile*.js",
       "!old_version/**/*",
       "!icon.ico",
-      "!src/assets/**/*"
+      "!src/assets/**/*",
+      "!site/**/*"
     ],
     "appId": "app.pwp.pchecker",
     "compression": "maximum",

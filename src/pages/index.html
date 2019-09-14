@@ -55,7 +55,7 @@
                         ipcRenderer.send('mainwindow-reload');
                         break;
                     case 'about':
-                        ipcRenderer.send('openAboutWindow');
+                        ipcRenderer.send('open-aboutwindow');
                         break;
                 }
             });
@@ -115,7 +115,11 @@
             </div>
             <div class="crc-main">
                 <script id="crc-main-tmpl" type="text/x-jsrender">
+                    {{if highitem}}
+                    <div class="crc-main-item crc-main-highitem">
+                    {{else}}
                     <div class="crc-main-item">
+                    {{/if}}
                         <div class="crc-item-name">
                             <span>{{:name}}: </span>
                         </div>
@@ -246,6 +250,7 @@
                 let hash_md5 = crypto.createHash('md5');
                 let hash_sha1 = crypto.createHash('sha1');
                 let hash_sha256 = crypto.createHash('sha256');
+                let hash_sha512 = crypto.createHash('sha512');
                 let hash_ripemd160 = crypto.createHash('ripemd160');
                 stream.on('data', function(d) {
                     // judge flag
@@ -257,6 +262,7 @@
                     hash_md5.update(d);
                     hash_sha1.update(d);
                     hash_sha256.update(d);
+                    hash_sha512.update(d);
                     hash_ripemd160.update(d);
                     // update ui
                     if (file_stats) {
@@ -293,6 +299,11 @@
                     html += crc_tmpl.render({
                         name: 'sha256',
                         value: hash_sha256.digest('hex')
+                    });
+                    html += crc_tmpl.render({
+                        name: 'sha512',
+                        highitem: true,
+                        value: hash_sha512.digest('base64')
                     });
                     html += crc_tmpl.render({
                         name: 'ripemd160',
@@ -383,16 +394,16 @@
                         $('.container-update').animateCss('fadeIn superfaster');
                         $('#btn-update').one('click', function(){
                             ipcRenderer.send('downloadNow');
-                            $('#btn-save').attr('disabled','true');
+                            $('#btn-update').attr('disabled','true');
                         });
                         break;
                     case 'download-progress':
-                        $('#btn-save').text('正在下载更新 '+data.percent.toFixed(1)+'%');
+                        $('#btn-update').text('正在下载更新 '+data.percent.toFixed(1)+'%');
                         break;
                     case 'update-downloaded':
-                        $('#btn-save').text('更新下载完成，点我立刻更新');
-                        $('#btn-save').removeAttr('disabled');
-                        $('#btn-save').one('click',function(){
+                        $('#btn-update').text('更新下载完成，点我立刻更新');
+                        $('#btn-update').removeAttr('disabled');
+                        $('#btn-update').one('click',function(){
                             ipcRenderer.send('app-quitNow');
                         });
                         break;
@@ -402,9 +413,7 @@
     </div>
     <script>
         if (!indebug) {
-            console.log(1)
             Mousetrap.bind('ctrl+shift+i', (e) => {
-                console.log(2)
                 e.preventDefault();
                 e.stopPropagation();
             });

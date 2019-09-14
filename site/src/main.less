@@ -1,0 +1,78 @@
+@import '../../src/less/colors/color.less';
+@import '../../src/less/colors/color.default.less';
+
+body {
+    height: 100%;
+    margin: 0 !important;
+    font-family: Microsoft Yahei UI, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 350;
+    background: @color-primary;
+}
+
+html {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+a, span, p, i{
+    color: @color-text-primary;
+}
+
+h{
+    margin-left: 0.15em;
+    margin-right: 0.15em;
+}
+
+.no-select-and-drag{
+    user-select: none !important;
+    -webkit-user-drag: none !important;
+}
+
+button:focus{
+    outline: none !important;
+}
+
+.container-main{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    -webkit-user-drag: none;
+}
+
+.container-title{
+    width: 100%;
+    margin-top: 120px;
+}
+
+.title-logo{
+    margin-top: 48px;
+    text-align: center;
+}
+
+.title-logo > img {
+    width: 150px;
+    height: 150px;
+    .no-select-and-drag();
+}
+
+.title-text{
+    text-align: center;
+    .no-select-and-drag();
+}
+
+.title-text > span {
+    font-size: 48px;
+    letter-spacing: 0.1em;
+}
+
+.title-desc{
+    margin-top: 24px;
+    text-align: center;
+    .no-select-and-drag();
+}
+
+.title-desc > span {
+    font-size: 22px;
+    letter-spacing: 0.1em;
+}

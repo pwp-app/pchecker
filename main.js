@@ -1,7 +1,8 @@
 // requirements
 const {
     app,
-    BrowserWindow
+    BrowserWindow,
+    shell
 } = require('electron');
 const ipc = require('electron').ipcMain;
 const storage = require('electron-json-storage');
@@ -70,7 +71,7 @@ let checkForUpdates = () => {
     });
 
     autoUpdater.on('download-progress', function(progressObj) {
-        sendUpdateMessage('downloadProgress', progressObj);
+        sendUpdateMessage('download-progress', progressObj);
     });
 
     autoUpdater.on('update-downloaded', () => {
@@ -108,8 +109,8 @@ function createMainWindow() {
     // conf of main window
 
     var conf = {
-        width: 620,
-        height: 320,
+        width: 640,
+        height: 362,
         resizable: false,
         maximizable: false,
         show: false,
@@ -145,7 +146,11 @@ function createMainWindow() {
             mainWindow.reload();
         });
 
-        ipc.on('openAboutWindow', () => {
+        ipc.on('open-external-link', (e, url) => {
+            shell.openExternal(url);
+        });
+
+        ipc.on('open-aboutwindow', () => {
             aboutWindow.create();
         });
 

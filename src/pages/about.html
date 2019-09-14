@@ -52,7 +52,7 @@
             </div>
             <div class="about-footer">
                 <div class="about-icons">
-                    <i class="fa fa-github-alt" aria-hidden="true"></i>
+                    <i class="fa fa-github-alt" id="i-github" aria-hidden="true"></i>
                 </div>
                 <div class="about-author">
                     <span>Developed by BackRunner</span>
@@ -67,5 +67,8 @@
                 e.stopPropagation();
             });
         }
+        $('#i-github').click(function(){
+            ipcRenderer.send('open-external-link', 'https://github.com/backrunner/pChecker')
+        });
     </script>
 </body>
