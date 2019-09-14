@@ -33,6 +33,8 @@
     "files": [
       "!.vscode/**/*",
       "!**/Readme*",
+      "!**/LICENSE",
+      "!**/dist/**/*",
       "!**/gulpfile*.js",
       "!old_version/**/*",
       "!icon.ico",
