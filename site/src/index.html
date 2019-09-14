@@ -2,93 +2,196 @@
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>pChecker</title>
-        <meta name="description" content="A file crc checker Developed by BackRunner">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="static/animate.min.css">
-        <link rel="stylesheet" href="static/main.min.css">
-        <script src="static/jquery.min.js"></script>
-        <script>
-            $.fn.extend({
-                animateCss: function (animationName, callback) {
-                    var animationEnd = (function (el) {
-                        var animations = {
-                            animation: 'animationend',
-                            OAnimation: 'oAnimationEnd',
-                            MozAnimation: 'mozAnimationEnd',
-                            WebkitAnimation: 'webkitAnimationEnd',
-                        };
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
 
-                        for (var t in animations) {
-                            if (typeof (el.style[t]) !== 'undefined') {
-                                return animations[t];
-                            }
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>pChecker</title>
+    <meta name="description" content="A file crc checker Developed by BackRunner">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="static/animate.min.css">
+    <link rel="stylesheet" href="static/font-awesome.min.css">
+    <link rel="stylesheet" href="static/main.min.css">
+    <script src="static/jquery.min.js"></script>
+    <script src="static/js-yaml.min.js"></script>
+    <script>
+        $.fn.extend({
+            animateCss: function(animationName, callback) {
+                var animationEnd = (function(el) {
+                    var animations = {
+                        animation: 'animationend',
+                        OAnimation: 'oAnimationEnd',
+                        MozAnimation: 'mozAnimationEnd',
+                        WebkitAnimation: 'webkitAnimationEnd',
+                    };
+
+                    for (var t in animations) {
+                        if (typeof(el.style[t]) !== 'undefined') {
+                            return animations[t];
                         }
-                    })(document.createElement('div'));
+                    }
+                })(document.createElement('div'));
 
-                    this.addClass('animated ' + animationName).one(animationEnd, function () {
-                        $(this).removeClass('animated ' + animationName);
-                        if (typeof callback === 'function') callback();
-                    });
+                this.addClass('animated ' + animationName).one(animationEnd, function() {
+                    $(this).removeClass('animated ' + animationName);
+                    if (typeof callback === 'function') callback();
+                });
 
-                    return this;
-                },
-            });
-        </script>
-    </head>
-    <body>
-        <!--[if lt IE 7]>
+                return this;
+            },
+        });
+    </script>
+</head>
+
+<body>
+    <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <div class="container-main">
-            <div class="container-title">
-                <div class="title-logo">
-                    <img src="static/mirror.png">
-                </div>
-                <div class="title-text">
-                    <span>pChecker</span>
-                </div>
-                <div class="title-desc">
-                    <span data-lang="desc">一个具有现代<h></h>UI<h></h>的开源文件校验器</span>
+    <div class="container-main">
+        <div class="container-title">
+            <div class="title-logo">
+                <img src="static/mirror.png">
+            </div>
+            <div class="title-text">
+                <span>pChecker</span>
+            </div>
+            <div class="title-desc">
+                <span data-lang="desc">一个具有现代<h></h>UI<h></h>的开源文件校验器</span>
+            </div>
+        </div>
+        <div class="container-download">
+            <div class="download-loading">
+                <i class="fa fa-cog fa-spin"></i>
+            </div>
+            <div class="download-error">
+                <span id="download-error-msg">无法获取安装包下载信息</span>
+                <div class="controls download-error-controls">
+                    <button id="btn-viewsource"><span>查看源码</span></button>
                 </div>
             </div>
-            <div class="container-download">
-                <div class="download-error">
-                    <span>无法获取安装包下载信息</span>
-                    <div class="controls download-error-controls">
-                        <button><span>查看源码</span></button>
-                    </div>
-                </div>
-            </div>
-            <div class="container-footer">
-                <div class="footer-split-wrapper">
-                    <div class="footer-split"></div>
-                </div>
-                <div class="footer-link">
-                    <a href="https://pwp.app">GitHub</a>
-                    <a href="https://pwp.app">pwp.app</a>
+            <div class="download-main">
+                <div class="controls download-main-controls">
+                    <button id="btn-download"><span>点我下载</span></button>
                 </div>
             </div>
         </div>
-        <script>
+        <div class="container-footer">
+            <div class="footer-split-wrapper">
+                <div class="footer-split"></div>
+            </div>
+            <div class="footer-link">
+                <a href="https://github.com/backrunner/pChecker">GitHub</a>
+                <a href="https://pwp.app" class="link-leftspacing">pwp.app</a>
+                <span style="margin-left:8px;margin-right:8px">|</span>
+                <span>Designed & developed by BackRunner</span>
+            </div>
+        </div>
+    </div>
+    <div class="container-mobile">
+        <div class="mobile-main">
+            <div class="mobile-icon">
+                <i class="fa fa-desktop"></i>
+            </div>
+            <div class="mobile-info">
+                <span>请使用桌面端设备访问</span>
+            </div>
+        </div>
+    </div>
+    <script>
+        var download_base = 'http://update.backrunner.top/pchecker/win32/';
+        var download_url = download_base;
+
+        var os = (function() {
+            var UserAgent = navigator.userAgent.toLowerCase();
+            return {
+                isIpad: /ipad/.test(UserAgent),
+                isIphone: /iphone os/.test(UserAgent),
+                isAndroid: /android/.test(UserAgent),
+                isWindowsCe: /windows ce/.test(UserAgent),
+                isWindowsMobile: /windows mobile/.test(UserAgent),
+                isWin2K: /windows nt 5.0/.test(UserAgent),
+                isWinXP: /windows nt 5.1/.test(UserAgent),
+                isVista: /windows nt 6.0/.test(UserAgent),
+                isWin7: /windows nt 6.1/.test(UserAgent),
+                isWin8: /windows nt 6.2/.test(UserAgent),
+                isWin81: /windows nt 6.3/.test(UserAgent),
+                isWin10: /windows nt 10.0/.test(UserAgent),
+                isMac: /mac os/.test(UserAgent),
+                is64bit: /(wow64|win64)/.test(UserAgent)
+            };
+        }());
+
+        if (os.is64bit) {
+            download_url += 'x64/';
+        }
+
+        if (os.isIpad){
+            $('.container-main').hide();
+            $('.container-mobile').css('display', 'flex');
+        }
+
+        if (os.isWin7 || os.isWin8 || os.isWin81 || os.isWin10) {
             $.ajax({
-                url: 'http://update.backrunner.top/pchecker/win32/lastest.yml',
+                url: 'https://update.backrunner.top/pchecker/win32/latest.yml',
                 type: 'GET',
-                success: function(res){
-                    if (res){
-
+                success: function(res) {
+                    if (res) {
+                        var ver = jsyaml.load(res);
+                        download_url += ver.path;
+                        $('.download-loading').animateCss('fadeOut superfaster', function() {
+                            $('.download-loading').hide();
+                            $('.download-main').show();
+                            $('.download-main').animateCss('fadeIn superfaster');
+                        });
                     } else {
-
+                        $('.download-loading').animateCss('fadeOut superfaster', function() {
+                            $('.download-loading').hide();
+                            $('.download-error').show();
+                            $('.download-error').animateCss('fadeIn superfaster');
+                        });
                     }
                 },
-                error: function(err){
+                error: function(err) {
                     console.error(err);
+                    $('.download-loading').animateCss('fadeOut superfaster', function() {
+                        $('.download-loading').hide();
+                        $('.download-error').show();
+                        $('.download-error').animateCss('fadeIn superfaster');
+                    });
                 }
-            })
-        </script>
-    </body>
+            });
+        } else {
+            if (os.isWinXP){
+                $('#download-error-msg').html('软件不支持<h></h>Windows XP<h></h>及以下的操作系统');
+            } else if (os.isMac && !os.isIpad && !os.isIphone) {
+                $('#download-error-msg').html('暂不支持<h></h>macOS');
+            } else {
+                $('#download-error-msg').html('未找到适用的软件安装包');
+            }
+            $('.download-loading').animateCss('fadeOut superfaster', function() {
+                $('.download-loading').hide();
+                $('.download-error').show();
+                $('.download-error').animateCss('fadeIn superfaster');
+            });
+        }
+
+        $('#btn-viewsource').click(function() {
+            window.location.href = "https://github.com/backrunner/pChecker";
+        });
+
+        $('#btn-download').click(function() {
+            window.location.href = download_url;
+            $('#btn-download').attr('disabled', 'disabled');
+            $('#btn-download').find('span').text('正在启动下载');
+            setTimeout(function() {
+                $('#btn-download').removeAttr('disabled');
+                $('#btn-download').find('span').text('点我下载');
+            }, 2000);
+        });
+    </script>
+</body>
+
 </html>

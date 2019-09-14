@@ -86,7 +86,16 @@ button:focus{
     margin-top: 108px;
 }
 
+.download-loading{
+    text-align: center;
+}
+
+.download-loading > i{
+    font-size: 2.5em;
+}
+
 .download-error{
+    display: none;
     text-align: center;
     .no-select-and-drag();
 }
@@ -100,10 +109,19 @@ button:focus{
     margin-top: 28px;
 }
 
+.download-main{
+    display: none;
+    margin-top: 32px;
+}
+
+.download-main-controls{
+    text-align: center;
+}
+
 .container-footer{
     width: 100%;
     position: absolute;
-    bottom: 120px;
+    bottom: 100px;
 }
 
 .footer-split-wrapper{
@@ -117,6 +135,31 @@ button:focus{
     background: lighten(@color-text-primary, 50%);
 }
 
+.footer-link{
+    width: 100%;
+    text-align: center;
+    margin-top: 18px;
+    .no-select-and-drag();
+}
+
+.footer-link > a{
+    color: lighten(@color-text-primary, 35%);
+    letter-spacing: 0.05em;
+}
+
+.footer-link > span{
+    color: lighten(@color-text-primary, 35%);
+    letter-spacing: 0.05em;
+}
+
+.footer-link > a:hover{
+    color: lighten(@color-text-primary, 45%) !important;
+}
+
+.link-leftspacing{
+    margin-left: 4px;
+}
+
 .controls > button{
     height: 38px;
     border: none;
@@ -125,7 +168,7 @@ button:focus{
     padding-left: 24px;
     padding-right: 24px;
     padding-bottom: 4px;
-    transition: 100ms;
+    transition: 75ms;
 }
 
 .controls > button:hover{
@@ -137,9 +180,80 @@ button:focus{
     background: @color-active-primary;
 }
 
+.controls > button:disabled{
+    cursor: wait;
+}
+
 .controls > button > span{
     font-size: 15px;
     color: @color-primary;
     letter-spacing: 0.1em;
     .no-select-and-drag();
+}
+
+.container-mobile{
+    display: none;
+    width: 100%;
+    height: 100%;
+    -webkit-user-drag: none;
+}
+
+.mobile-main{
+    margin: auto;
+}
+
+.mobile-icon{
+    text-align: center;
+    font-size: 3.2em;
+}
+
+.mobile-info{
+    text-align: center;
+    font-size: 32px;
+    margin-top: 18px;
+}
+
+@media(max-height: 768px){
+    .container-title{
+        margin-top: 65px;
+    }
+    .container-footer{
+        bottom: 65px;
+    }
+}
+
+@media(max-height: 720px){
+    .container-title{
+        margin-top: 58px;
+    }
+}
+
+
+@media(max-width: 1023px){
+    .container-main{
+        display: none;
+    }
+    .container-mobile{
+        display: flex;
+    }
+}
+
+@media(max-width: 375px){
+    .mobile-icon{
+        text-align: center;
+        font-size: 2.5em;
+    }
+    .mobile-info{
+        font-size: 26px;
+    }
+}
+
+@media(max-width: 320px){
+    .mobile-icon{
+        text-align: center;
+        font-size: 2.4em;
+    }
+    .mobile-info{
+        font-size: 24px;
+    }
 }
