@@ -17,15 +17,18 @@
     <script src="static/animate.css.js"></script>
     <script src="static/jsrender.min.js"></script>
     <script src="static/mousetrap.min.js"></script>
+    <script src="static/clipboard.copy.js"></script>
+    <script src="static/menu.hash.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
     <script>
         // requirements
         const {
             remote,
-            ipcRenderer
+            ipcRenderer,
         } = require('electron');
         const app = remote.app;
         const dialog = remote.dialog;
+        const {Menu, MenuItem} = remote;
         const fs = require('fs');
         const crypto = require('crypto');
         const path = require('path');
@@ -117,16 +120,25 @@
                 <script id="crc-main-tmpl" type="text/x-jsrender">
                     {{if highitem}}
                     <div class="crc-main-item crc-main-highitem">
-                    {{else}}
-                    <div class="crc-main-item">
-                    {{/if}}
-                        <div class="crc-item-name">
-                            <span>{{:name}}: </span>
-                        </div>
-                        <div class="crc-item-value">
-                            <span>{{:value}}</span>
-                        </div>
-                    </div>
+                        {{else}}
+                            <div class="crc-main-item">
+                                {{/if}}
+                                <div class="crc-item-name">
+                                    <span>{{:name}}: </span>
+                                </div>
+                                <div class="crc-item-value">
+                                    <span>{{:value}}</span>
+                                </div>
+                            </div>
+                </script>
+                <script>
+                    var copyready = '';
+                    $(document).on('mousedown', '.crc-item-value > span', function(e) {
+                        if (e.which == 3) {
+                            copyready = $(this).text();
+                            popup_menu_hash();
+                        }
+                    });
                 </script>
             </div>
             <div class="crc-footer">
@@ -392,18 +404,18 @@
                     case 'update-available':
                         $('.container-update').show();
                         $('.container-update').animateCss('fadeIn superfaster');
-                        $('#btn-update').one('click', function(){
+                        $('#btn-update').one('click', function() {
                             ipcRenderer.send('downloadNow');
-                            $('#btn-update').attr('disabled','true');
+                            $('#btn-update').attr('disabled', 'true');
                         });
                         break;
                     case 'download-progress':
-                        $('#btn-update').text('正在下载更新 '+data.percent.toFixed(1)+'%');
+                        $('#btn-update').text('正在下载更新 ' + data.percent.toFixed(1) + '%');
                         break;
                     case 'update-downloaded':
                         $('#btn-update').text('更新下载完成，点我立刻更新');
                         $('#btn-update').removeAttr('disabled');
-                        $('#btn-update').one('click',function(){
+                        $('#btn-update').one('click', function() {
                             ipcRenderer.send('app-quitNow');
                         });
                         break;
@@ -418,5 +430,10 @@
                 e.stopPropagation();
             });
         }
+        // 屏蔽f11
+        Mousetrap.bind('f11', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
     </script>
 </body>
