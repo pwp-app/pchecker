@@ -15,16 +15,15 @@
     flex: 0 0 70%;
     max-width: 70%;
     .no-select-and-drag();
-}
-
-.crc-file > p {
-    letter-spacing: 0.025em;
-    font-size: 14px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    text-align: left;
-    direction: rtl;
+    p {
+        letter-spacing: 0.025em;
+        font-size: 14px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        text-align: left;
+        direction: rtl;
+    }
 }
 
 .crc-header-split{
@@ -40,12 +39,11 @@
 
 .crc-status-wrapper{
     float: right;
-}
-
-.crc-status-wrapper > span{
-    margin-left: 4px;
-    letter-spacing: 0.025em;
-    font-size: 14px;
+    span{
+        margin-left: 4px;
+        letter-spacing: 0.025em;
+        font-size: 14px;
+    }
 }
 
 #crc-status-finished{
@@ -65,21 +63,19 @@
     flex: 0 0 15%;
     max-width: 15%;
     .no-select-and-drag();
-}
-
-.crc-item-name > span{
-    font-size: 14px;
+    span{
+        font-size: 14px;
+    }
 }
 
 .crc-item-value{
     flex: 0 0 85%;
     max-width: 85%;
-}
-
-.crc-item-value > span{
-    font-size: 14px;
-    word-break: break-all;
-    white-space: initial;
+    span{
+        font-size: 14px;
+        word-break: break-all;
+        white-space: initial;
+    }
 }
 
 .crc-progress{
@@ -106,30 +102,26 @@
 .crc-controls{
     text-align: center;
     margin-top: 18px;
-}
-
-.crc-controls > button{
-    height: 32px;
-    border: none;
-    background: @color-text-primary;
-    border-radius: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 4px;
-    transition: 75ms;
-}
-
-.crc-controls > button:hover{
-    background: @color-hover-primary;
-}
-
-.crc-controls > button:active{
-    background: @color-active-primary;
-}
-
-.crc-controls > button > span{
-    font-size: 13px;
-    color: @color-primary;
-    letter-spacing: 0.05em;
-    .no-select-and-drag();
+    button{
+        height: 32px;
+        border: none;
+        background: @color-text-primary;
+        border-radius: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-bottom: 4px;
+        transition: 75ms;
+        span{
+            font-size: 13px;
+            color: @color-primary;
+            letter-spacing: 0.05em;
+            .no-select-and-drag();
+        }
+    }
+    button:hover{
+        background: @color-hover-primary;
+    }
+    button:active{
+        background: @color-active-primary;
+    }
 }

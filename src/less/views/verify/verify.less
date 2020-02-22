@@ -1,0 +1,49 @@
+.verify-body{
+    .container-main{
+        width: 100%;
+        margin-top: @titlebar-height;
+        .no-select-and-drag();
+    }
+    .container-verify {
+        width: 100%;
+        height: 100%;
+        padding: 12px;
+        .verify-control {
+            input {
+                width: 504px;
+                font-size: 13px;
+                height: 36px;
+                line-height: 36px;
+                display: inline-block;
+                border-radius: 36px;
+                background: @color-primary;
+                padding: 8px 16px;
+            }
+            input:focus {
+                outline: none !important;
+                box-shadow: none !important;
+                border: 1px solid @color-text-primary;
+            }
+            button {
+                width: 36px;
+                height: 36px;
+                border: none;
+                background: @color-text-primary;
+                border-radius: 20px;
+                transition: 75ms;
+                display: inline-block;
+                margin-left: 8px;
+                i {
+                    color: @color-primary;
+                    .no-select-and-drag();
+                }
+            }
+            button:hover{
+                background: @color-hover-primary;
+            }
+            button:active{
+                background: @color-active-primary;
+            }
+        }
+    }
+}

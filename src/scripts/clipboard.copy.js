@@ -1,4 +1,4 @@
-function copyToClipboard(input,callback) {
+function copyToClipboard(input, callback) {
     var textToClipboard = input;
 
     var success = true;
@@ -30,11 +30,11 @@ function copyToClipboard(input,callback) {
     }
 
     if (success) {
-        if (typeof callback.success == 'function'){
+        if (callback && typeof callback.success == 'function'){
             callback.success();
         }
     } else {
-        if (typeof callback.error == 'function'){
+        if (callback && typeof callback.error == 'function'){
             callback.error();
         }
     }

@@ -7,25 +7,27 @@
     display: none;
 }
 
-.update-controls > button{
-    height: 24px;
-    border: none;
-    padding-left: 18px;
-    padding-right: 18px;
-    background: @color-text-primary;
-    border-radius: 20px;
-    font-size: 11px;
-    color: @color-primary;
-    letter-spacing: 0.05em;
-    .no-select-and-drag();
-}
-.update-controls > button:hover{
-    background: @color-hover-primary;
-}
-.update-controls > button:disabled{
-    cursor: not-allowed;
-    background: @color-text-primary !important;
-}
-.update-controls > button:active{
-    background: @color-active-primary;
+.update-controls {
+    button{
+        height: 24px;
+        border: none;
+        padding-left: 18px;
+        padding-right: 18px;
+        background: @color-text-primary;
+        border-radius: 20px;
+        font-size: 11px;
+        color: @color-primary;
+        letter-spacing: 0.05em;
+        .no-select-and-drag();
+    }
+    button:hover{
+        background: @color-hover-primary;
+    }
+    button:disabled{
+        cursor: not-allowed;
+        background: @color-text-primary !important;
+    }
+    button:active{
+        background: @color-active-primary;
+    }
 }

@@ -37,11 +37,13 @@ function createWindow(){
     });
 
     aboutWindow.on('ready-to-show', () => {
-        aboutWindow.show();
+        ipc.once('i18n-inited', () => {
+            aboutWindow.show();
+        });
     });
 }
 
-var obj = {
+const obj = {
     create: () => {
         if (aboutWindow != null){
             if (aboutWindow.isMinimized()) {

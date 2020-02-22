@@ -13,12 +13,13 @@
     <link rel="stylesheet" href="static/font-awesome.min.css">
     <link rel="stylesheet" href="static/bootstrap.min.css">
     <link rel="stylesheet" href="static/animate.min.css">
+    <link rel="stylesheet" href="static/toastr.min.css">
     <script src="static/bootstrap.min.js"></script>
     <script src="static/animate.css.js"></script>
     <script src="static/jsrender.min.js"></script>
     <script src="static/mousetrap.min.js"></script>
     <script src="static/clipboard.copy.js"></script>
-    <script src="static/menu.hash.js"></script>
+    <script src="static/toastr.min.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
     <script>
         // requirements
@@ -36,7 +37,17 @@
 
         // const
         const indebug = remote.getGlobal('indebug');
+
+        // toastr
+        toastr.options = {
+            "positionClass": "toast-top-center",
+            "showDuration": "200",
+            "hideDuration": "600",
+            "timeOut": "3000"
+        }
     </script>
+    <script src="static/i18n.js"></script>
+    <script src="static/menu.hash.js"></script>
 </head>
 
 <body class="index-body">
@@ -46,7 +57,7 @@
             <!--<span class="title-toolbar-item" data-action="reload">重新载入</span>
             <span class="title-toolbar-item">批量</span>
             <span class="title-toolbar-item">设置</span>-->
-            <span class="title-toolbar-item" data-action="about">关于</span>
+            <span class="title-toolbar-item" data-action="about" i18n="toolbar.about">关于</span>
         </div>
         <div id="electron-titlebar" class="titlebar" style="position: fixed !important;z-index: 10;"></div>
         <script>
@@ -67,17 +78,17 @@
     <div class="container-main">
         <div class="container-file">
             <div class="file-title">
-                <span>拖放文件到这个窗口</span>
+                <span i18n="file.drop">拖放文件到这个窗口</span>
             </div>
             <div class="file-split">
                 <span>or</span>
             </div>
             <div class="file-controls">
-                <button id="btn-choosefile"><span>选择文件</span></button>
+                <button id="btn-choosefile"><span i18n="file.select">选择文件</span></button>
             </div>
             <div class="container-update">
                 <div class="update-controls">
-                    <button id="btn-update">检测到新版本，点我更新</button>
+                    <button id="btn-update" i18n="update.newversion">检测到新版本，点我更新</button>
                 </div>
             </div>
         </div>
@@ -92,7 +103,7 @@
                         <i class="fa fa-spin fa-spinner crc-status-icon" id="crc-status-loading"></i>
                         <i class="fa fa-check crc-status-icon" id="crc-status-finished"></i>
                         <i class="fa fa-times crc-status-icon" id="crc-status-error"></i>
-                        <span id="crc-status-text">正在校验</span>
+                        <span id="crc-status-text" i18n="check.calculating">正在校验</span>
                     </div>
                 </div>
             </div>
@@ -103,11 +114,12 @@
             </div>
             <div class="crc-cancel">
                 <div class="crc-controls">
-                    <button id="btn-crc-cancel"><span>取消</span></button>
+                    <button id="btn-crc-cancel"><span i18n="check.cancel">取消</span></button>
                 </div>
                 <script>
                     $('#btn-crc-cancel').click(function() {
                         flag_destory_stream = true;
+                        flag_drop = true;
                         $('.container-crc').animateCss('fadeOut superfaster', function() {
                             $('.container-crc').hide();
                             $('.container-file').show();
@@ -143,9 +155,9 @@
             </div>
             <div class="crc-footer">
                 <div class="crc-controls">
-                    <button id="btn-crc-choosefile"><span>选择文件</span></button>
-                    <button id="btn-crc-save" style="margin-left: 12px;"><span>保存结果</span></button>
-                    <button id="btn-crc-back" style="margin-left: 12px;"><span>返回</span></button>
+                    <button id="btn-crc-choosefile"><span i18n="check.select">选择文件</span></button>
+                    <button id="btn-crc-save" style="margin-left: 12px;"><span i18n="check.save">保存结果</span></button>
+                    <button id="btn-crc-back" style="margin-left: 12px;"><span i18n="check.back">返回</span></button>
                 </div>
                 <script>
                     $('#btn-crc-choosefile').click(function() {
@@ -163,7 +175,7 @@
                         let e_value = $('.crc-main-item').find('.crc-item-value');
                         let validatePath = $('.crc-file-filepath').attr('title');
                         dialog.showSaveDialog({
-                            title: '保存校验内容',
+                            title: i18n('saveresult.title'),
                             defaultPath: 'pChecker-' + path.basename(validatePath) + '-' + moment().format('YYYYMMDDHHmmss') + '.log'
                         }).then(result => {
                             if (!result.canceled) {
@@ -172,8 +184,8 @@
                                     if (err) {
                                         dialog.showMessageBox({
                                             type: 'error',
-                                            title: '保存失败',
-                                            message: '无法打开文件。'
+                                            title: i18n('saveresult.failed'),
+                                            message: i18n('saveresult.cantopen')
                                         });
                                         return;
                                     }
@@ -207,7 +219,7 @@
 
             function chooseFile(source) {
                 dialog.showOpenDialog({
-                    title: '选择文件',
+                    title: i18n('check.select'),
                     properties: ['showHiddenFiles']
                 }).then(result => {
                     if (!result.canceled) {
@@ -290,7 +302,7 @@
                                 $('.crc-cancel').animateCss('fadeIn veryfaster');
                             }
                             // set ui
-                            $('#crc-status-text').text('正在校验 ' + Math.floor(percent) + '%');
+                            $('#crc-status-text').text(i18n('check.calculating')+' ' + Math.floor(percent) + '%');
                         }
                     }
                 });
@@ -354,15 +366,15 @@
                 switch (status) {
                     case 'error':
                         $('#crc-status-error').show();
-                        $('#crc-status-text').text('校验错误');
+                        $('#crc-status-text').text(i18n('check.error'));
                         break;
                     case 'validating':
                         $('#crc-status-loading').show();
-                        $('#crc-status-text').text('正在校验');
+                        $('#crc-status-text').text(i18n('check.calculating'));
                         break;
                     case 'finished':
                         $('#crc-status-finished').show();
-                        $('#crc-status-text').text('校验完成');
+                        $('#crc-status-text').text(i18n('check.completed'));
                         break;
                 }
             }
@@ -379,11 +391,9 @@
                     let filepath = e.dataTransfer.files[0].path;
                     let filestat = fs.statSync(filepath);
                     if (filestat.isDirectory()) {
-                        dialog.showMessageBox({
-                            type: 'error',
-                            title: '错误',
-                            message: '不支持拖放文件夹，请拖放一个文件到窗口内进行校验'
-                        });
+                        setTimeout(()=>{
+                            toastr.error(i18n('file.drop.foldererror'));
+                        }, 0);
                     } else {
                         initValidate();
                         if ($('.container-file').css('display') == 'none') {
@@ -410,10 +420,10 @@
                         });
                         break;
                     case 'download-progress':
-                        $('#btn-update').text('正在下载更新 ' + data.percent.toFixed(1) + '%');
+                        $('#btn-update').text(i18n('update.downloading') + ' ' + data.percent.toFixed(1) + '%');
                         break;
                     case 'update-downloaded':
-                        $('#btn-update').text('更新下载完成，点我立刻更新');
+                        $('#btn-update').text(i18n('update.downloaded'));
                         $('#btn-update').removeAttr('disabled');
                         $('#btn-update').one('click', function() {
                             ipcRenderer.send('app-quitNow');
@@ -424,8 +434,26 @@
         </script>
     </div>
     <script>
+        ipcRenderer.on('verify-result', (sender, data) => {
+            console.log(data);
+            if (!data){
+                toastr.error(i18n('verify.data.error'));
+            }
+            if (data === copyready) {
+                toastr.success(i18n('verify.success'));
+            } else {
+                toastr.error(i18n('verify.error'));
+            }
+        });
+    </script>
+    <script>
         if (!indebug) {
             Mousetrap.bind('ctrl+shift+i', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+            // 屏蔽f12
+            Mousetrap.bind('f12', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
             });
@@ -436,4 +464,5 @@
             e.stopPropagation();
         });
     </script>
+    <div id="container-infobar"></div>
 </body>

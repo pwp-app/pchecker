@@ -11,6 +11,7 @@ const path = require('path');
 // load window
 
 const aboutWindow = require('./app/windows/aboutWindow');
+const verifyWindow = require('./app/windows/verifyWindow');
 
 // global const
 const appName = 'pchecker';
@@ -109,7 +110,7 @@ function createMainWindow() {
     // conf of main window
 
     var conf = {
-        width: 640,
+        width: 662,
         height: 362,
         resizable: false,
         maximizable: false,
@@ -137,9 +138,6 @@ function createMainWindow() {
 
     mainWindow.on('ready-to-show', () => {
 
-        mainWindow.show();
-        checkForUpdates();
-
         // main window ipc
 
         ipc.on('mainwindow-reload', () => {
@@ -158,6 +156,18 @@ function createMainWindow() {
             app.quit();
         });
 
+        ipc.once('i18n-inited', ()=>{
+            mainWindow.show();
+            checkForUpdates();
+        });
+
+        ipc.on('hash-verify', () => {
+            verifyWindow.create();
+        });
+
+        ipc.on('verify-result', (sender, input) => {
+            mainWindow.send('verify-result', input);
+        });
     });
 
     mainWindow.on('closed', () => {

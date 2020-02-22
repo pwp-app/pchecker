@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title i18n="about.title">关于</title>
+    <title i18n="verify.title">核对</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--import requirements-->
     <script>
@@ -12,9 +12,11 @@
     </script>
     <link rel="stylesheet" href="static/font-awesome.min.css">
     <link rel="stylesheet" href="static/bootstrap.min.css">
-    <link rel="stylesheet" href="static/animate.min.css">
+    <link rel="stylesheet" href="static/toastr.min.css">
     <script src="static/bootstrap.min.js"></script>
     <script src="static/mousetrap.min.js"></script>
+    <script src="static/animate.css.js"></script>
+    <script src="static/toastr.min.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
     <script>
         const {
@@ -24,47 +26,54 @@
 
         const app = remote.app;
         const indebug = remote.getGlobal('indebug');
+
+        // toastr
+        toastr.options = {
+            "positionClass": "toast-top-center",
+            "showDuration": "200",
+            "hideDuration": "500",
+            "timeOut": "2000"
+        }
     </script>
     <script src="static/i18n.js"></script>
 </head>
 
-<body class="about-body">
+<body class="verify-body">
     <div class="container-titlebar col-lg-12 drag">
-        <div class="title" id="app-title" i18n="about.title">关于</div>
+        <div class="title" id="app-title" i18n="verify.title">核对</div>
         <div id="electron-titlebar" class="titlebar" style="position: fixed !important;z-index: 10;"></div>
         <script>
             require('electron-titlebar');
         </script>
     </div>
     <div class="container-main">
-        <div class="container-about">
-            <div class="about-logo">
-                <img src="static/images/mirror.png"></img>
+        <div class="container-verify">
+            <div class="verify-control">
+                <input class="form-control" id="input-verify">
+                <button id="btn-submitVerify"><i class="fa fa-check"></i></button>
             </div>
-            <div class="about-title">
-                <span>pChecker</span>
-                <div class="about-version">
-                    <span id="text-version"></span>
-                    <script>
-                        let version = app.getVersion();
-                        $(document).ready(function() {
-                            $('#text-version').text(version);
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="about-footer">
-                <div class="about-icons">
-                    <i class="fa fa-github-alt" id="i-github" aria-hidden="true"></i>
-                </div>
-                <div class="about-author">
-                    <span>Developed by BackRunner</span>
-                </div>
-            </div>
+            <script>
+                $('#btn-submitVerify').click(() => {
+                    let hash_input = $('#input-verify').val();
+                    if (!hash_input) {
+                        toastr.error(i18n('verify.input.empty'));
+                        return;
+                    }
+                    hash_input = hash_input.trim();
+                    // double check
+                    if (!hash_input) {
+                        toastr.error(i18n('verify.input.empty'));
+                        return;
+                    }
+                    ipcRenderer.send('verify-result', hash_input);
+                    // send message to ipc then close window
+                    window.close();
+                });
+            </script>
         </div>
     </div>
     <script>
-       if (!indebug) {
+        if (!indebug) {
             Mousetrap.bind('ctrl+shift+i', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -80,8 +89,6 @@
             e.preventDefault();
             e.stopPropagation();
         });
-        $('#i-github').click(function(){
-            ipcRenderer.send('open-external-link', 'https://github.com/backrunner/pChecker')
-        });
     </script>
+    <div id="container-infobar"></div>
 </body>

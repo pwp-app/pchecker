@@ -6,9 +6,9 @@
     letter-spacing: 0.08em;
     text-align: center;
     .no-select-and-drag();
-}
-.file-title > span{
-    color: @color-text-primary;
+    span{
+        color: @color-text-primary;
+    }
 }
 .file-split{
     margin: 10px 0 16px 0;
@@ -16,33 +16,32 @@
     letter-spacing: 0.05em;
     text-align: center;
     .no-select-and-drag();
-}
-.file-split > span{
-    color: @color-text-primary;
+    span{
+        color: @color-text-primary;
+    }
 }
 .file-controls{
     text-align: center;
-    //margin-bottom: 4px;
-}
-.file-controls > button{
-    height: 36px;
-    border: none;
-    background: @color-text-primary;
-    border-radius: 20px;
-    padding-left: 28px;
-    padding-right: 28px;
-    padding-bottom: 4px;
-    transition: 75ms;
-}
-.file-controls > button:hover{
-    background: @color-hover-primary;
-}
-.file-controls > button:active{
-    background: @color-active-primary;
-}
-.file-controls > button > span{
-    font-size: 14px;
-    color: @color-primary;
-    letter-spacing: 0.1em;
-    .no-select-and-drag();
+    button{
+        height: 36px;
+        border: none;
+        background: @color-text-primary;
+        border-radius: 20px;
+        padding-left: 28px;
+        padding-right: 28px;
+        padding-bottom: 4px;
+        transition: 75ms;
+        span{
+            font-size: 14px;
+            color: @color-primary;
+            letter-spacing: 0.1em;
+            .no-select-and-drag();
+        }
+    }
+    button:hover{
+        background: @color-hover-primary;
+    }
+    button:active{
+        background: @color-active-primary;
+    }
 }
