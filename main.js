@@ -155,7 +155,7 @@ function createMainWindow() {
         ipc.on('app-quitNow', ()=>{
             app.quit();
         });
-
+        
         ipc.once('i18n-inited', ()=>{
             mainWindow.show();
             checkForUpdates();

@@ -13,13 +13,11 @@
     <link rel="stylesheet" href="static/font-awesome.min.css">
     <link rel="stylesheet" href="static/bootstrap.min.css">
     <link rel="stylesheet" href="static/animate.min.css">
-    <link rel="stylesheet" href="static/toastr.min.css">
     <script src="static/bootstrap.min.js"></script>
     <script src="static/animate.css.js"></script>
     <script src="static/jsrender.min.js"></script>
     <script src="static/mousetrap.min.js"></script>
     <script src="static/clipboard.copy.js"></script>
-    <script src="static/toastr.min.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
     <script>
         // requirements
@@ -39,12 +37,11 @@
         const indebug = remote.getGlobal('indebug');
 
         // toastr
-        toastr.options = {
-            "positionClass": "toast-top-center",
-            "showDuration": "200",
-            "hideDuration": "600",
-            "timeOut": "3000"
-        }
+        const toastr = require('toastr');
+        toastr.options.positionClass = "toast-top-center";
+        toastr.options.timeOut = 2500;
+        toastr.options.showDuration = 300;
+        toastr.options.hideDuration = 500;
     </script>
     <script src="static/i18n.js"></script>
     <script src="static/menu.hash.js"></script>
@@ -131,17 +128,17 @@
             <div class="crc-main">
                 <script id="crc-main-tmpl" type="text/x-jsrender">
                     {{if highitem}}
-                    <div class="crc-main-item crc-main-highitem">
-                        {{else}}
-                            <div class="crc-main-item">
-                                {{/if}}
-                                <div class="crc-item-name">
-                                    <span>{{:name}}: </span>
-                                </div>
-                                <div class="crc-item-value">
-                                    <span>{{:value}}</span>
-                                </div>
-                            </div>
+                        <div class="crc-main-item crc-main-highitem">
+                    {{else}}
+                        <div class="crc-main-item">
+                    {{/if}}
+                        <div class="crc-item-name">
+                            <span>{{:name}}: </span>
+                        </div>
+                        <div class="crc-item-value">
+                            <span>{{:value}}</span>
+                        </div>
+                    </div>
                 </script>
                 <script>
                     var copyready = '';
