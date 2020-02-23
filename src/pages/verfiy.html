@@ -12,10 +12,11 @@
     </script>
     <link rel="stylesheet" href="static/font-awesome.min.css">
     <link rel="stylesheet" href="static/bootstrap.min.css">
-    <script src="static/bootstrap.min.js"></script>
-    <script src="static/mousetrap.min.js"></script>
-    <script src="static/animate.css.js"></script>
     <link rel="stylesheet" id="main-style" type="text/css" media="screen" href="static/main.css">
+    <script src="static/bootstrap.min.js" async defer></script>
+    <script src="static/mousetrap.min.js" async defer></script>
+    <script src="static/animate.css.js" async defer></script>
+    <script src="static/toastr.min.js"></script>
     <script>
         const {
             remote,
@@ -26,9 +27,9 @@
         const indebug = remote.getGlobal('indebug');
 
         // toastr
-        const toastr = require('toastr');
         toastr.options.positionClass = "toast-top-center";
-        toastr.options.timeOut = 2500;
+        toastr.options.preventDuplicates = true;
+        toastr.options.timeOut = 2000;
         toastr.options.showDuration = 300;
         toastr.options.hideDuration = 500;
     </script>
