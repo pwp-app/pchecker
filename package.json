@@ -1,6 +1,6 @@
 {
   "name": "pchecker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple crc checker based on Electron",
   "main": "main.js",
   "scripts": {
