@@ -18,17 +18,17 @@
     <script src="static/animate.css.js" async defer></script>
     <script src="static/jsrender.min.js" async defer></script>
     <script src="static/mousetrap.min.js" async defer></script>
-    <script src="static/clipboard.copy.js" async defer></script>
     <script src="static/toastr.min.js"></script>
     <script>
         // requirements
         const {
             remote,
-            ipcRenderer,
+            ipcRenderer
         } = require('electron');
         const app = remote.app;
         const dialog = remote.dialog;
-        const {Menu, MenuItem} = remote;
+        const { Menu, MenuItem } = remote;
+        const clipboard = require('electron').clipboard;
         const fs = require('fs');
         const crypto = require('crypto');
         const path = require('path');
@@ -40,7 +40,7 @@
         // toastr
         toastr.options.positionClass = "toast-top-center";
         toastr.options.timeOut = 2500;
-        toastr.options.showDuration = 300;
+        toastr.options.showDuration = 400;
         toastr.options.hideDuration = 500;
     </script>
     <script src="static/i18n.js"></script>
@@ -179,11 +179,7 @@
                                 let filepath = result.filePath;
                                 fs.open(filepath, 'w', (err, fd) => {
                                     if (err) {
-                                        dialog.showMessageBox({
-                                            type: 'error',
-                                            title: i18n('saveresult.failed'),
-                                            message: i18n('saveresult.cantopen')
-                                        });
+                                        toastr.error(i18n('saveresult.failed') + i18n('saveresult.cantopen'));
                                         return;
                                     }
                                     fs.writeSync(fd, 'pChecker Log\n');
@@ -432,7 +428,6 @@
     </div>
     <script>
         ipcRenderer.on('verify-result', (sender, data) => {
-            console.log(data);
             if (!data){
                 toastr.error(i18n('verify.data.error'));
             }

@@ -3,11 +3,8 @@ function popup_menu_hash(){
     menu_hash.append(new MenuItem({
         label: i18n('menu.copy'),
         click: ()=>{
-            copyToClipboard(copyready, {
-                success: function(){
-                    toastr.success(i18n('copy.success'));
-                }
-            });
+            clipboard.writeText(copyready);
+            toastr.success(i18n('copy.success'));
         }
     }));
     menu_hash.append(new MenuItem({
