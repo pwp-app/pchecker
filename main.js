@@ -5,7 +5,6 @@ const {
     shell
 } = require('electron');
 const ipc = require('electron').ipcMain;
-const storage = require('electron-json-storage');
 const path = require('path');
 
 // load window
@@ -155,7 +154,7 @@ function createMainWindow() {
         ipc.on('app-quitNow', ()=>{
             app.quit();
         });
-        
+
         ipc.once('i18n-inited', ()=>{
             mainWindow.show();
             checkForUpdates();
